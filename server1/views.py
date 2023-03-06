@@ -16,10 +16,16 @@ def index():
 def postdata():
     # extract json data from the request
     data = request.get_json()
+
+    decode64_and_save_img("img/class/test_image_6.jpg", data["class_img"])
+
+    for key in data["faces"]:
+        value = data["faces"][key]
+        decode64_and_save_img(f"img/faces/{key}.jpg", value)
+
     # print(data) 
     # do something with this data variable that contains the data from the node server
 
-    decode64_and_save_img("img/test_image_6.jpg", data)
 
     return_image = open_and_encode64("img/ahmed_mohamed.jpg")
 

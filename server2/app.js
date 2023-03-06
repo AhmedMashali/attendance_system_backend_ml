@@ -16,13 +16,27 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.get('/postdatatoFlask', async (req, res) => { 
     
     // data to be sent to the model => (token image of the class and the images of indviduals)
-    var data = fs.readFileSync('img/test_class_6.jpeg', 'base64');
+    var img_class = fs.readFileSync('img/class/test_class_6.jpeg', 'base64');
+    var img_ahmed_mohamed = fs.readFileSync('img/faces/ahmed_mohamed.jpg', 'base64');
+    var img_ali_kamel= fs.readFileSync('img/faces/ali_kamel.jpg', 'base64');
+    var img_kamal_sobhy = fs.readFileSync('img/faces/kamal_sobhy.jpg', 'base64');
+    var img_karem_sabri = fs.readFileSync('img/faces/karem_sabri.jpg', 'base64');
+    var img_mohamed_ibrahim = fs.readFileSync('img/faces/mohamed_ibrahim.jpg', 'base64');
+    var img_tamer_ali = fs.readFileSync('img/faces/tamer_ali.jpg', 'base64');
+
     
     // multiple data can be sent like this:
-    // var data = { // this variable contains the data you want to send 
-    //     data1: "foo",
-    //     data2: "bar"
-    // }
+    var data = { // this variable contains the data you want to send 
+        class_img: img_class,
+        faces: {
+            "ahmed mohamed": img_ahmed_mohamed,
+            "ali kamel": img_ali_kamel,
+            "kamal sobhy": img_kamal_sobhy,
+            "karem sabri": img_karem_sabri,
+            "mohamed ibrahim": img_mohamed_ibrahim,
+            "tamer ali": img_tamer_ali
+        }
+    }
 
     var options = { 
         method: 'POST', 
