@@ -19,9 +19,7 @@ def postdata():
 
     decode64_and_save_img("img/class/test_image_6.jpg", data["class_img"])
 
-    for key in data["faces"]:
-        value = data["faces"][key]
-        decode64_and_save_img(f"img/faces/{key}.jpg", value)
+    save_faces(data)
 
     # print(data) 
     # do something with this data variable that contains the data from the node server
