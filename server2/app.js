@@ -51,14 +51,20 @@ app.get('/postdatatoFlask', async (req, res) => {
     .then((parsedBody) => {
         // parsedBody contains the data sent back from the Flask server 
         // console.log(parsedBody); 
-        returndata = parsedBody.newdata.slice(2, -1); 
+        // returndata = parsedBody.newdata.slice(2, -1);
+        returndata = parsedBody
         // Use this data
-        fs.writeFileSync("img/ahmed_mohamed.jpg", parsedBody.newdata.slice(2, -1) , 'base64');
+        var keys = Object.keys( returndata );
+        for( var i = 0, length = keys.length; i < length; i++){
+            returndata[ keys[ i ] ]
+            fs.writeFileSync(`img/attendance/${keys[ i ]}.jpg`, returndata[ keys[ i ] ].slice(2, -1) , 'base64');
+        }
+        // fs.writeFileSync("img/ahmed_mohamed.jpg", parsedBody.newdata.slice(2, -1) , 'base64');
     })
-    .catch((err) => { 
+    .catch((err) => {
         console.log(err);
     }); 
-    res.send(returndata);
+    res.send('done');
 
 }); 
   

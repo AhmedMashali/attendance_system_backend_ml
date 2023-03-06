@@ -1,6 +1,7 @@
 from flask import request
 from flask import Blueprint
 from utils import *
+from recognition import *
 import json
 
 
@@ -18,14 +19,15 @@ def postdata():
     data = request.get_json()
 
     decode64_and_save_img("img/class/test_image_6.jpg", data["class_img"])
-
     save_faces(data)
+    attendance = recognition()
+    # print(attendance)
 
-    # print(data) 
     # do something with this data variable that contains the data from the node server
 
 
-    return_image = open_and_encode64("img/ahmed_mohamed.jpg")
+    # return_image = open_and_encode64("img/ahmed_mohamed.jpg")
 
     # return data to Node.js app
-    return json.dumps({"newdata":f"{return_image}"})
+    print('is here!')
+    return json.dumps(attendance)
