@@ -1,46 +1,51 @@
 import face_recognition
-from PIL import Image, ImageDraw
-import base64
+from PIL import Image
 import os
-from io import BytesIO
-
-
+from utils import encode_npImage_to_base64
 
 path = 'img/faces'
-# for filename in os.listdir(path):
-#     f = os.path.join(path, filename)
-#     if os.path.isfile(f):
-#         print(filename.replace('.jpg', ''))
 
-
-known_face_encodings = []    
-known_face_names = []
-
-# take JSON data
+# getting attendance
 def recognition():
+
+    known_face_encodings = []    
+    known_face_names = []
     attendance = {}
-    # for every face:
+
+    # prepare refernce faces for recognition
+    create_faceEncodings_with_names(known_face_encodings, known_face_names, path)
+    # prepare the taken image for recognition
+    taken_image = face_recognition.load_image_file("img/taken img/image.jpg")
+
+    # Find faces in taken image
+    face_locations = face_recognition.face_locations(taken_image)
+    face_encodings = face_recognition.face_encodings(taken_image, face_locations)
+
+    # Compare refernce faces with faces from the taken image and get the attendance faces and names
+    get_attendance(face_locations, face_encodings, known_face_encodings, known_face_names, taken_image, attendance)
+    
+    return attendance
+
+# prepare refernce faces for recognition
+def create_faceEncodings_with_names(known_face_encodings, known_face_names, path):
+    # iterate over the files in the folder to get images paths
     for filename in os.listdir(path):
-        f = os.path.join(path, filename)
-        if os.path.isfile(f):
-            student_img = face_recognition.load_image_file(f)
-            student_face_encoding = face_recognition.face_encodings(student_img)[0]
-            known_face_encodings.append(student_face_encoding)
-            known_face_names.append(filename.replace('.jpg', ''))
+            f = os.path.join(path, filename)
+            if os.path.isfile(f):
+                # prepare refernce face
+                reference_face = face_recognition.load_image_file(f)
+                student_face_encoding = face_recognition.face_encodings(reference_face)[0]
+                known_face_encodings.append(student_face_encoding)
+                # getting the name from the filename then appending it to known_face_names
+                known_face_names.append(filename.replace('.jpg', ''))
 
-    class_image = face_recognition.load_image_file("img/class/test_image_6.jpg")
-
-    # Find faces in test image
-    face_locations = face_recognition.face_locations(class_image)
-    face_encodings = face_recognition.face_encodings(class_image, face_locations)
-
-    # Convert to PIL format
-    pil_image = Image.fromarray(class_image)
-
+# Compare refernce faces with faces from the taken image and get the attendance faces and names
+def get_attendance(face_locations, face_encodings, known_face_encodings, known_face_names, class_image, attendance):
     i = 0
-    # Loop through faces in test image
     for face_location, face_encoding in zip(face_locations, face_encodings):
+        # getting face location
         top, right, bottom, left = face_location
+        # checking for the mathed faces
         matches = face_recognition.compare_faces(known_face_encodings, face_encoding, tolerance=0.5)
 
         name = "Unknwon Person"
@@ -49,24 +54,35 @@ def recognition():
         if True in matches:
             first_match_index = matches.index(True)
             name = known_face_names[first_match_index]
+        # pull face
         face_image = class_image[top:bottom, left:right]
-        # print(face_image)
-        pil_image = Image.fromarray(face_image)
-        buffered = BytesIO()
-        pil_image.save(buffered, format="JPEG")
-        img_str = base64.b64encode(buffered.getvalue())
-        attendance[f"{name}{i}"] = f"{img_str}"
+        # incode face to base64
+        face_b64 = encode_npImage_to_base64(face_image)
+        # appending face with name to the attendance data
+        attendance[f"{name}{i}"] = f"{face_b64}"
         i += 1
-    return attendance
 
 
+"""
+attendace = {
+    'known' : {
+        'name': 'face b46',
+        'name': 'face b46',
+            .
+            .
+            .
+    },
+    'unknown': {
+        'face b64', 'face b64', 'face b64', 
+    }
 
+}
 
-#   load_image_file
-#   face_encoding
-#   push into known_face_encodings
-#   push name into known face_names
+attendance = {
+    'name': 'face b46',
+    'name': 'face b46',
+        .
+        .
+        .
 
-
-# load class image
-# class_image = face_recognition.load_image_file("img/class/test_image_6.jpg")
+"""

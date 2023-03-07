@@ -18,16 +18,19 @@ def postdata():
     # extract json data from the request
     data = request.get_json()
 
-    decode64_and_save_img("img/class/test_image_6.jpg", data["class_img"])
+    # decoding base64 taken image and saving it in taken img folder
+    decode64_and_save_img("img/taken img/image.jpg", data["taken_img"])
+
+    # decoding reference faces and saving it in faces folder
     save_faces(data)
+
+    # getting attendance
     attendance = recognition()
-    # print(attendance)
 
-    # do something with this data variable that contains the data from the node server
+    # clear folders from images
+    clear_folder('img/taken img')
+    clear_folder('img/faces')
 
 
-    # return_image = open_and_encode64("img/ahmed_mohamed.jpg")
-
-    # return data to Node.js app
-    print('is here!')
+    # return attendace as JSON
     return json.dumps(attendance)

@@ -27,7 +27,7 @@ app.get('/postdatatoFlask', async (req, res) => {
     
     // multiple data can be sent like this:
     var data = { // this variable contains the data you want to send 
-        class_img: img_class,
+        taken_img: img_class,
         faces: {
             "ahmed mohamed": img_ahmed_mohamed,
             "ali kamel": img_ali_kamel,
